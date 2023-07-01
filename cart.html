@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .box {
+            width: 100%;
+            height: 250px;
+            background-color: rgba(204, 204, 204, 0.2);
+            border-radius: 5px;
+        }
+        .box button {
+            width: 100%;
+        }
+        .total {
+            margin: 25px 0;
+        }
+        .radio {
+            margin: 25px 0 35px;
+        }
+        .cheack {
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+        <a href="productapi.html" class="navbar-brand">Ecommorce Producs</a>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="productapi.html">Producs</a>
+            </li>
+            <li class="nav-item d-flex">
+                <a class="nav-link" href="cart.html">Cart</a>
+                <div id="box" class="text-white"></div>
+            </li>
+            <li class="nav-item">
+                <div class="dropdown ml-2 mr-3">
+                    <a href="" data-toggle="dropdown" class="nav-link">
+                        Category
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="electronics.html">Electronics</a>
+                        <a class="dropdown-item" href="Jewelery.html">Jewelery</a>
+                        <a class="dropdown-item" href="Men's-Clothing.html">Men's Clothing</a>
+                        <a class="dropdown-item" href="women's-clothing.html">women's clothing</a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item">
+                <form class="form-inline" action="/action_page.php">
+                    <input class="form-control mr-sm-2" type="text" placeholder="Search">
+                    <button class="btn btn-success" type="submit">Search</button>
+                </form>
+            </li>
+        </ul>
+    </nav>
+    <div class="container">
+        <h3 class="text-center p-3">Your Cart Item</h3>
+        <div class="row">
+            <div class="col-lg-9">
+                <table class="table">
+                    <thead>
+                        <th>Products img</th>
+                        <th>Category</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                        <th></th>
+                    </thead>
+                    <tbody id="producs"></tbody>
+                </table>
+            </div>
+            <div class="col-lg-3 box">
+                <h5 class="total">Products Price Total : </h5><div id="i_total"></div>
+                <input type="radio" name="btn" class="mr-2 radio">Case One Dilivery
+                <button class="btn btn-outline-info cheack">Make A Purchase</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        let str = "";
+        // let counting = "";
+        // let count = 2;
+        function cart(pdata) {
+            let cart_data = JSON.parse(localStorage.getItem("cartdata"));
+            cart_data.filter((producs, index) => {
+                str += `<tr>
+                            <td><img src=${producs.image} height="50" width="50"></td>
+                            <td><h4 class="mt-2">${producs.category}</h4></td>
+                            <td>
+                                <div class="mt-2"><input type="number" onchange="price()" value="1" class="quantity" class="w-25"></div>
+                            </td>
+                            <td>
+                                <input type="hidden" class="price" value="${producs.price}">Price :</br> ₹ ${producs.price} </br>
+                            </td>
+                            <td>
+                                <p>Total :</br> ₹ <span class="total"></span></p>
+                            </td>
+                            <td>
+                                <a href="#" onclick= "remove(${index})" class="btn btn-outline-danger" mt-2">Remove</a>
+                            </td>
+                        </tr>`
+            });
+            document.getElementById("producs").innerHTML = str;
+            let data = cart_data.length;
+            let arr = [data];
+            document.getElementById("box").innerHTML = arr;
+            let localdata = JSON.parse(localStorage.getItem("cartdata"));
+        }
+        cart();
+
+        // remove item funtion.................
+        let id = "";
+        function remove(id) {
+            id = id;
+            let cart_data = localStorage.getItem("cartdata");
+            if (cart_data == null) {
+                cartArr = [];
+            }
+            else {
+                cartArr = JSON.parse(cart_data);
+            }
+            let newcartArr = cartArr.filter((producs, index) => {
+                return id != index;
+            });
+            localStorage.setItem("cartdata", JSON.stringify(newcartArr));
+            window.location = "cart.html";
+            document.getElementById("box").innerHTML = counting;
+        }
+
+        // price funtion................
+        let i_total = 0;
+        let quantity = document.getElementsByClassName("quantity");
+        let mprice = document.getElementsByClassName("price");
+        let total = document.getElementsByClassName("total"); 
+        function price() {
+            for (i = 0; i < mprice.length; i++) {
+                total[i].innerHTML = (mprice[i].value) * (quantity[i].value);
+                i_total = i_total + (mprice[i].value) * (quantity[i].value);
+            }
+            document.getElementById("i_total").innerHTML = i_total;
+        }
+        price();
+
+        // // plus quantity funtion................. 
+        // let count = 2;
+        // let qyn = "";
+        // function plusqun(plus) {
+        //     counting = count++;
+        //     qyn = `${counting}`
+        //     let data = JSON.parse(localStorage.getItem("cartdata"));
+        //     let arr = data.filter((producs,index) => {
+        //         return ((plus == index));
+        //     });
+        //     if (arr.length > 0) {
+        //         document.getElementById("quantity").value = qyn;
+        //     }
+        //     else {
+        //         alert("invalid this button")
+        //     }
+        // }
+
+        // // minus quantity funtion......................
+        // let qyn1 = "";
+        // function minusqun(min) {
+        //     console.log(min);
+        //     let minus = qyn;
+        //     minus = -1 + --count;
+        //     qyn1 = `${minus}`
+        //     document.getElementById("quantity").value = qyn1;
+        // }
+
+
+    </script>
+
+    <!-- jQuery library -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
